@@ -68,12 +68,17 @@ def load_edge2d_from_tranfile(tranfile):
     n_imp = nz_imp.size if nz_imp.sum() else 0  # number of impurities
     if n_imp:
         zn_imp = np.frombuffer(dataread(tranfile, 'ZCH').data[:n_imp], np.int32)  # impurity nuclear charge
+        am_imp = dataread(tranfile, 'ZMASS').data[:n_imp]  # impurity mass number (if available)
         # obtaining impurity charges from charge state distribution
         # Note: Cherab does not support fractional charge states, so using a workaround
         i_impz = 0
         impurity_indx_dict = {}
         for i, zn_i in enumerate(zn_imp):
-            element = lookup_element(zn_i)
+            if am_imp[i]:
+                element = lookup_isotope(zn_i, number=int(am_imp[i]))
+                element = prefer_element(element)
+            else:
+                element = lookup_element(zn_i)
             species_list.append((element.name, 0))
             for ich in range(nz_imp[i]):
                 charge_distrib = np.round(dataread(tranfile, 'ZI{:02d}'.format(i_impz + 1)).data[indx_cell]).astype(np.int32)
