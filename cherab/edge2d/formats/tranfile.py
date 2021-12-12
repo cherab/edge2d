@@ -32,11 +32,9 @@ from cherab.edge2d.edge2d_plasma import Edge2DSimulation, prefer_element
 
 # TODO: find out if EDGE2D supports non-hydrogen (e.g. helium as a main ion) plasmas
 #       and how to process such cases
-# TODO: find out how to process multi-isotope cases, there is no data for impurity's
-#       atomic mass number, only for the nuclear charge
 # TODO: find out how to obtain neutral atom velocities for impurity species
 # TODO: read total radiation
-def load_edge2d_from_tranfile(tranfile):
+def load_edge2d_from_tranfile(tranfile, atomic_data=None):
     """
     Load an EDGE2D simulation from EDGE2D tran file.
 
@@ -172,8 +170,8 @@ def load_edge2d_from_tranfile(tranfile):
     sim.velocities_cylindrical = velocities_cyl  # set species velocities
 
     if np.any(h_alpha):
-        openadas = OpenADAS()
-        wavelength = openadas.wavelength(lookup_isotope(species_list[0][0]), 0, (3, 2))
+        atomic_data = atomic_data or OpenADAS()
+        wavelength = atomic_data.wavelength(lookup_isotope(species_list[0][0]), 0, (3, 2))
         sim.h_alpha_radiation = PhotonToJ.to(h_alpha, wavelength)  # photon/s -> W
 
     return sim
