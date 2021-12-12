@@ -17,5 +17,5 @@
 # See the Licence for the specific language governing permissions and limitations
 # under the Licence.
 
-from .line_emitter import Edge2DLineEmitter
-from .edge2d_emitter import make_edge2d_emitter
+from cherab.edge2d.models.line_emitter cimport Edge2DLineEmitter
+
