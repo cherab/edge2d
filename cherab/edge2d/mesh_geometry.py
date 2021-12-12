@@ -37,7 +37,7 @@ class Edge2DMesh:
                       Example shape is (4 x 3000).
     :param ndarray z: Array of cell vertex z coordinates, must be 2 dimensional.
                       Example shape is (4 x 3000).
-    :param ndarray vol: Array of cell volumes. Default is None (calculated from r, z).
+    :param ndarray vol: Array of cell volumes in m-3. Default is None (calculated from r, z).
     """
 
     def __init__(self, r, z, vol=None):
@@ -152,17 +152,17 @@ class Edge2DMesh:
 
     @property
     def vol(self):
-        """Volume/area of each grid cell."""
+        """Volume of each grid cell in m-3."""
         return self._vol
 
     @property
     def radial_area(self):
-        """Radial contact area."""
+        """Radial contact area in m-3."""
         return self._radial_area
 
     @property
     def poloidal_area(self):
-        """Poloidal contact area."""
+        """Poloidal contact area in m-2."""
         return self._poloidal_area
 
     @property
