@@ -4,11 +4,7 @@ import sys
 import numpy
 import os
 import os.path as path
-import multiprocessing
 
-multiprocessing.set_start_method('fork')
-
-threads = multiprocessing.cpu_count()
 force = False
 profile = False
 
@@ -46,5 +42,5 @@ setup(
     namespace_packages=['cherab'],
     packages=find_packages(),
     include_package_data=True,
-    ext_modules=cythonize(extensions, nthreads=threads, force=force, compiler_directives=directives)
+    ext_modules=cythonize(extensions, force=force, compiler_directives=directives)
 )
