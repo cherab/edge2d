@@ -19,3 +19,4 @@ docs/build/
 build/
 .idea/
 .nfs*
+cherab_edge2d.egg-info/
