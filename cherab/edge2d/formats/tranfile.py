@@ -20,14 +20,19 @@
 import os
 import numpy as np
 
-from eproc import dataread
-
 from cherab.core.utility import PhotonToJ
 from cherab.core.atomic.elements import lookup_isotope, lookup_element
 from cherab.openadas import OpenADAS
 
 from cherab.edge2d.mesh_geometry import Edge2DMesh
 from cherab.edge2d.edge2d_plasma import Edge2DSimulation, prefer_element
+
+try:
+    from eproc import dataread
+except ImportError:
+    _has_eproc = False
+else:
+    _has_eproc = True
 
 
 # TODO: find out if EDGE2D supports non-hydrogen (e.g. helium as a main ion) plasmas
@@ -41,6 +46,9 @@ def load_edge2d_from_tranfile(tranfile, atomic_data=None):
     :param str tranfile: String path to a simulation tran file.
     :rtype: Edge2DSimulation
     """
+
+    if not _has_eproc:
+        raise RuntimeError("The eproc module is required to parse EDGE2D tran files.")
 
     if not os.path.isfile(tranfile):
         raise RuntimeError("File {} not found.".format(tranfile))
