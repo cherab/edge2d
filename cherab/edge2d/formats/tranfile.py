@@ -187,6 +187,9 @@ def load_edge2d_from_tranfile(tranfile, atomic_data=None):
 
 def create_mesh_from_tranfile(tranfile):
 
+    if not _has_eproc:
+        raise RuntimeError("The eproc module is required to parse EDGE2D tran files.")
+
     r_vert = dataread(tranfile, 'RVERTP').data  # R-coordinates of cell vertices
     z_vert = dataread(tranfile, 'ZVERTP').data  # Z-coordinates of cell vertices
 
