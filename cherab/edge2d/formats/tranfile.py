@@ -57,23 +57,23 @@ def load_edge2d_from_tranfile(tranfile, atomic_data=None):
     n = mesh.n
 
     korpg = dataread(tranfile, 'KORPG')
-    korpg.data = np.frombuffer(korpg.data, dtype=np.int32)  # float32 to int32
+    korpg.data = korpg.data.astype(np.int32)
     indx_cell, = np.where(korpg.data[:korpg.nPts] > 0)
 
     # plasma composition
     am = dataread(tranfile, 'HMASS')  # main ion mass number
     am = int(am.data[0])
     zn = dataread(tranfile, 'HCH')  # main ion nuclear charge
-    zn = np.frombuffer(zn.data[:zn.nPts], np.int32)[0]  # float32 to int32
+    zn = zn.data[:zn.nPts].astype(np.int32)[0]
     main_isotope = lookup_isotope(zn, number=am)
     main_species = prefer_element(main_isotope)  # main plasma species
     species_list = [(main_species.name, charge) for charge in range(zn + 1)]
 
     nz_imp = dataread(tranfile, 'NZ')  # impurity charge states
-    nz_imp = np.frombuffer(nz_imp.data[:nz_imp.nPts], np.int32)  # float32 to int32
+    nz_imp = nz_imp.data[:nz_imp.nPts].astype(np.int32)
     n_imp = nz_imp.size if nz_imp.sum() else 0  # number of impurities
     if n_imp:
-        zn_imp = np.frombuffer(dataread(tranfile, 'ZCH').data[:n_imp], np.int32)  # impurity nuclear charge
+        zn_imp = dataread(tranfile, 'ZCH').data[:n_imp].astype(np.int32)  # impurity nuclear charge
         am_imp = dataread(tranfile, 'ZMASS').data[:n_imp]  # impurity mass number (if available)
         # obtaining impurity charges from charge state distribution
         # Note: Cherab does not support fractional charge states, so using a workaround
@@ -196,7 +196,7 @@ def create_mesh_from_tranfile(tranfile):
     z_vert *= -1.0  # Z data is upside down
 
     korpg = dataread(tranfile, 'KORPG')  # maps k-mesh to plasma cells
-    korpg.data = np.frombuffer(korpg.data, dtype=np.int32)  # float32 to int32
+    korpg.data = korpg.data.astype(np.int32)
     indx_cell = korpg.data[:korpg.nPts]
     indx_cell_data, = np.where(indx_cell > 0)
     ncell = indx_cell_data.size
