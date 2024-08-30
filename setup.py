@@ -1,9 +1,11 @@
+from collections import defaultdict
 from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 import sys
 import numpy
 import os
 import os.path as path
+from pathlib import Path
 
 force = False
 profile = False
@@ -34,13 +36,46 @@ if profile:
 else:
     directives = {}
 
+# Include demos in a separate directory in the distribution as data_files.
+demo_parent_path = Path("share/cherab/demos/edge2d")
+data_files = defaultdict(list)
+demos_source = Path("demos")
+for item in demos_source.rglob("*"):
+    if item.is_file():
+        install_dir = demo_parent_path / item.parent.relative_to(demos_source)
+        data_files[str(install_dir)].append(str(item))
+data_files = list(data_files.items())
+
+with open("README.md") as f:
+    long_description = f.read()
+
 
 setup(
     name="cherab-edge2d",
-    version="0.1.0",
+    version="0.2.0",
     license="EUPL 1.1",
     namespace_packages=['cherab'],
+    description="Cherab spectroscopy framework: EDGE2D submodule",
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Education",
+        "Intended Audience :: Developers",
+        "Natural Language :: English",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: Cython",
+        "Programming Language :: Python :: 3",
+        "Topic :: Scientific/Engineering :: Physics",
+    ],
+    url="https://github.com/cherab",
+    project_urls=dict(
+        Tracker="https://github.com/cherab/edge2d/issues",
+        Documentation="https://cherab.github.io/documentation/",
+    ),
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=find_packages(),
     include_package_data=True,
+    install_requires=["raysect==0.8.1.*", "cherab==1.5.*"],
     ext_modules=cythonize(extensions, force=force, compiler_directives=directives)
 )

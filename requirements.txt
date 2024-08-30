@@ -1,1 +1,3 @@
-cherab
+cherab==1.5.*
+raysect==0.8.1.*
+cython~=3.0
